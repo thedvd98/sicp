@@ -3,9 +3,7 @@
 (define (append1 list1 list2)
   (if (null? (cdr list1))
       list2
-      (cons (car list1) (append1 (cdr list1) list2))
-      )
-  )
+      (cons (car list1) (append1 (cdr list1) list2))))
 
 (define (reverse1 l)
   (if (null? l)
@@ -42,3 +40,39 @@
          (cons (car w) (apply same-parity a (cdr w))))
         (else
           (apply same-parity a (cdr w)))))
+
+(define (map1 proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items))
+            (map1 proc (cdr items)))))
+
+
+(define (square x)
+  (* x x))
+
+;ex 2.21
+(define (square-list items)
+  (if (null? items)
+      '()
+      (cons (* (car items) (car items)) (square-list (cdr items)))))
+
+(define (square-list1 items)
+  (map (lambda (x) (* x x)) items))
+
+
+;2.22
+;He should have used append
+(define (square-list-iter items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square (car things))))))
+  (iter items '()))
+
+(define (for-each1 proc items)
+  (if (not (null? items))
+      ((proc (car items))
+       (for-each1 proc (cdr items)))))
