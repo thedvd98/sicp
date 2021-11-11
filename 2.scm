@@ -73,6 +73,9 @@
   (iter items '()))
 
 (define (for-each1 proc items)
-  (if (not (null? items))
-      ((proc (car items))
+  (if (null? items)
+      #t
+      (begin
+       (proc (car items))
        (for-each1 proc (cdr items)))))
+
