@@ -1,7 +1,7 @@
 ;ex 2.18
 
 (define (append1 list1 list2)
-  (if (null? (cdr list1))
+  (if (null? list1)
       list2
       (cons (car list1) (append1 (cdr list1) list2))))
 
@@ -78,4 +78,19 @@
       (begin
        (proc (car items))
        (for-each1 proc (cdr items)))))
+
+; 2.27
+;; (1 (2 3) 3 (1 2 3))
+(define (deep-reverse l)
+  (cond
+    ((null? l) '())
+    ((list? (car l))
+     (append1
+       (deep-reverse (cdr l))
+       (cons (deep-reverse (car l)) '())))
+    (else
+      (append1 (deep-reverse (cdr l)) (list (car l))))))
+
+;      (append1 (reverse1 (cdr l)) (list (car l)))
+
 
