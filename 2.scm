@@ -94,3 +94,14 @@
 ;      (append1 (reverse1 (cdr l)) (list (car l)))
 
 
+;2.28
+(define (fringe x)
+  (cond
+    ((null? x) '())
+    ((list? (car x))
+     (append
+       (fringe (car x))
+       (fringe (cdr x))))
+    (else
+      (cons (car x) (fringe (cdr x)))      
+      )))
