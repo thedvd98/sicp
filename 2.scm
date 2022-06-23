@@ -218,3 +218,19 @@
 (define (square-tree tree)
   (tree-map square tree))
 
+; 2.32
+; set of all subset
+
+(define (subsets s)
+  (if (null? s)
+      (list '())
+      (let ((rest (subsets (cdr s))))
+       (append
+         rest
+         (map
+           (lambda (x) ;; concatenate the first element with every other element of the rest
+             (cons (car s) x))
+           rest)))))
+
+
+
