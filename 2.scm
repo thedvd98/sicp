@@ -187,6 +187,7 @@
              (scale-tree sub-tree factor)
              (* sub-tree factor)))
        tree))
+
 ; 2.30
 (define (square-tree1 tree)
   (cond
@@ -205,4 +206,15 @@
              )
          ) tree))
 
+; 2.31
+
+(define (tree-map func tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (tree-map func sub-tree)
+             (func sub-tree))
+         ) tree))
+
+(define (square-tree tree)
+  (tree-map square tree))
 
