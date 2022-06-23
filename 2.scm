@@ -105,3 +105,77 @@
     (else
       (cons (car x) (fringe (cdr x)))      
       )))
+
+; 2.29
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch len structure)
+  (list len structure))
+
+(define (left-branch mobile)
+  (car mobile))
+(define (right-branch mobile)
+  (car (cdr mobile)))
+(define (branch-length branch)
+  (car branch))
+(define (branch-structure branch)
+  (car (cdr branch)))
+
+(define (total-weight mobile)
+  (cond
+    ((null? mobile) 0)
+    ((number? mobile) mobile)
+    (else
+      (+ (total-weight
+           (cond
+             ((null? (left-branch mobile)) 0)
+             (else
+               (total-weight
+                 (branch-structure (left-branch mobile))))))
+         (total-weight (cond
+             ((null? (right-branch mobile)) 0)
+             (else
+               (total-weight
+                 (branch-structure (right-branch mobile))))))
+         ))))
+
+(define (example-binary-mobile)
+  (make-mobile
+    (make-branch
+      2
+      (make-mobile
+        (make-branch
+          999
+          (make-mobile
+            (make-branch 1 2)
+            (make-branch 1 5)
+            )
+          )
+        (make-branch 3 1)
+        )
+      )
+    (make-branch
+      4
+      (make-mobile
+        (make-branch 100 3)
+        (make-branch 200 900)))))
+
+(define (balanced? mobile)
+  (define (torque branch)
+    (*
+      (branch-length branch)
+      (total-weight (branch-structure branch))))
+  
+  (cond
+    ((not (pair? mobile)) #t)
+    (else
+      (and
+        (=
+            (torque (left-branch mobile))
+            (torque (right-branch mobile)))
+        (balanced? (branch-structure (left-branch mobile)))
+        (balanced? (branch-structure (right-branch mobile)))))))
+
+
+
