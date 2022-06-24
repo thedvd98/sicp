@@ -35,7 +35,7 @@
 (define (same-parity a . w)
   (cond ((null? w) '())
         ((and (even? a) (even? (car w)))
-              (cons (car w) (apply same-parity a (cdr w))))
+         (cons (car w) (apply same-parity a (cdr w))))
         ((and (not (even? a)) (not (even? (car w))))
          (cons (car w) (apply same-parity a (cdr w))))
         (else
@@ -76,8 +76,8 @@
   (if (null? items)
       #t
       (begin
-       (proc (car items))
-       (for-each1 proc (cdr items)))))
+        (proc (car items))
+        (for-each1 proc (cdr items)))))
 
 ; 2.27
 ;; (1 (2 3) 3 (1 2 3))
@@ -134,10 +134,10 @@
                (total-weight
                  (branch-structure (left-branch mobile))))))
          (total-weight (cond
-             ((null? (right-branch mobile)) 0)
-             (else
-               (total-weight
-                 (branch-structure (right-branch mobile))))))
+                         ((null? (right-branch mobile)) 0)
+                         (else
+                           (total-weight
+                             (branch-structure (right-branch mobile))))))
          ))))
 
 (define (example-binary-mobile)
@@ -166,14 +166,14 @@
     (*
       (branch-length branch)
       (total-weight (branch-structure branch))))
-  
+
   (cond
     ((not (pair? mobile)) #t)
     (else
       (and
         (=
-            (torque (left-branch mobile))
-            (torque (right-branch mobile)))
+          (torque (left-branch mobile))
+          (torque (right-branch mobile)))
         (balanced? (branch-structure (left-branch mobile)))
         (balanced? (branch-structure (right-branch mobile)))))))
 
@@ -271,3 +271,45 @@
       (append
         (enumerate-tree (car tree))
         (enumerate-tree (cdr tree))))))
+
+(define (sum-odd-square1 tree)
+  (accumulate + 0
+              (map square
+                   (filter odd? (enumerate-tree)))))
+
+(define (fib n)
+  (define (fib-iter a b count)
+    (if (= count 0)
+        b
+        (fib-iter (+ a b) a (- count 1))))
+  (fib-iter 1 0 n))
+
+(define (even-fibs n)
+  (accumulate cons
+              '()
+              (filter even?
+                      (map fib
+                           (enumerate-interval 0 n)))))
+
+(define (list-fibs-squares n)
+  (accumulate cons
+              '()
+              (map square
+                   (map fib
+                        (enumerate-interval 0 n)))))
+
+(define (alternative-map p sequence)
+  (accumulate
+    (lambda (x y) 
+      (append y (list (p x))))
+    '()
+    sequence
+    ))
+
+(define (alternative-append seq1 seq2)
+  (accumulate cons seq2 seq1))
+
+(define (alternative-length sequence)
+  (accumulate 
+    (lambda (x y) (+ 1 y))
+    0 sequence))
