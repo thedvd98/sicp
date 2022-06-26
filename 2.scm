@@ -298,14 +298,15 @@
                    (map fib
                         (enumerate-interval 0 n)))))
 
+;; 2.33
 (define (alternative-map p sequence)
   (accumulate
-    (lambda (x y) 
-      (append y (list (p x))))
+    (lambda (x accumulated) 
+      (cons (p x) accumulated))
     '()
     sequence
     ))
-
+;; (accumulate op initial sequence)
 (define (alternative-append seq1 seq2)
   (accumulate cons seq2 seq1))
 
@@ -313,3 +314,32 @@
   (accumulate 
     (lambda (x y) (+ 1 y))
     0 sequence))
+
+;; 2.34
+
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-terms)
+		(+ this-coeff (* x higher-terms)))
+	      0
+	      coefficient-sequence))
+
+;; 2.35
+(define (count-leaves1 t)
+  (cond ((null? t) 0)
+	((not (pair? t)) 1)
+	(else
+	 (+ (count-leaves1 (car t))
+	    (count-leaves1 (cdr t))))))
+
+(define (count-leaves t)
+  (accumulate
+   +
+   0
+   (map
+    (lambda (x)
+      (cond
+       ((null? x) 0)
+       ((not (pair? x)) 1)
+       (else
+	(count-leaves x))))
+    t)))
