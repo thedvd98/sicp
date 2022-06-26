@@ -350,3 +350,22 @@
       '()
       (cons (accumulate op init (map car seqs))
 	    (accumulate-n op init (map cdr seqs)))))
+
+;; 2.27
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+
+(define (matrix-*-vector m v)
+  (map
+   (lambda (row)
+     (dot-product row v))
+   m))
+
+(define (transpose mat)
+  (accumulate-n cons '() mat))
+
+;; For matrix multiplication, the number of columns in the first matrix must be equal to the number of rows in the second matrix. The result matrix has the number of rows of the first and the number of columns of the second matrix.
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map (lambda (x) (matrix-*-vector cols x)) m)))
+
