@@ -344,14 +344,14 @@
 	(count-leaves x))))
     t)))
 
-;; 2.26
+;; 2.36
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
       '()
       (cons (accumulate op init (map car seqs))
 	    (accumulate-n op init (map cdr seqs)))))
 
-;; 2.27
+;; 2.37
 (define (dot-product v w)
   (accumulate + 0 (map * v w)))
 
@@ -368,4 +368,27 @@
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
     (map (lambda (x) (matrix-*-vector cols x)) m)))
+
+
+;; 2.38
+
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+	result
+	(iter (op result (car rest))
+	      (cdr rest))))
+  (iter initial sequence))
+
+(define fold-right accumulate)
+
+;; 2.39
+
+(define (reverse2 sequence)
+  (fold-right
+   (lambda (x y) (append y (list x))) '() sequence))
+
+(define (reverse1 sequence)
+  (fold-left
+   (lambda (x y) (cons x y)) '() sequence))
 
