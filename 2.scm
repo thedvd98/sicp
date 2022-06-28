@@ -396,8 +396,8 @@
 (define (prime? a)
   (define (primee n)
     (cond
-     ((<= n 1) 1)
-     ((= (modulo a n) 0) 0)
+     ((<= n 1) #t)
+     ((= (modulo a n) 0) #f)
      (else (primee (- n 1)))))
   (primee (round (/ a 2))))
 
@@ -443,4 +443,38 @@
 
 ;; ex 2.40
 
+(define (unique-pairs n)
+  (flatmap
+   (lambda (i)
+     (map (lambda (j) (list i j))
+	  (enumerate-interval 1 (- i 1)))
+     )
+   (enumerate-interval 1 n)))
 
+(define (prime-sum-pairs2 n)
+  (map make-pair-sum
+       (filter prime-sum? (unique-pairs n))))
+
+;; ex 2.41
+;; Write a procedure to find all ordered triples of distinct positive integers i,j and k less than or equal to a given integer n that sum to a given integer s.
+
+(define (make-triple-sum triple)
+  (let ((a (car triple))
+	(b (cadr triple))
+	(c (caddr triple)))
+    (list a b c (+ a b c))))
+
+(define (unique-triples n)
+  (flatmap
+   (lambda (i)
+     (flatmap (lambda (j)
+	    (map (lambda (k)
+		   (list i j k))
+		 (enumerate-interval 1 (- j 1))))
+	  (enumerate-interval 1 (- i 1))))
+   (enumerate-interval 1 n)))
+
+(define (ex42 n s)
+  (filter (lambda (a)
+	    (eq? s (cadddr a)))
+   (map make-triple-sum (unique-triples n))))
