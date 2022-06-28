@@ -1,4 +1,4 @@
-;ex 2.18
+					;ex 2.18
 
 (define (append1 list1 list2)
   (if (null? list1)
@@ -10,7 +10,7 @@
       '()
       (append1 (reverse1 (cdr l)) (list (car l)))))
 
-;ex 2.19
+					;ex 2.19
 (define us-coins (list 50 25 10 5 1))
 
 (define (no-more? coin-values)
@@ -30,7 +30,7 @@
                         (first-denomination coin-values))
                      coin-values)))))
 
-;ex 2.20
+					;ex 2.20
 
 (define (same-parity a . w)
   (cond ((null? w) '())
@@ -39,7 +39,7 @@
         ((and (not (even? a)) (not (even? (car w))))
          (cons (car w) (apply same-parity a (cdr w))))
         (else
-          (apply same-parity a (cdr w)))))
+         (apply same-parity a (cdr w)))))
 
 (define (map1 proc items)
   (if (null? items)
@@ -51,7 +51,7 @@
 (define (square x)
   (* x x))
 
-;ex 2.21
+					;ex 2.21
 (define (square-list items)
   (if (null? items)
       '()
@@ -79,34 +79,34 @@
         (proc (car items))
         (for-each1 proc (cdr items)))))
 
-; 2.27
+					; 2.27
 ;; (1 (2 3) 3 (1 2 3))
 (define (deep-reverse l)
   (cond
-    ((null? l) '())
-    ((list? (car l))
-     (append1
-       (deep-reverse (cdr l))
-       (cons (deep-reverse (car l)) '())))
-    (else
-      (append1 (deep-reverse (cdr l)) (list (car l))))))
+   ((null? l) '())
+   ((list? (car l))
+    (append1
+     (deep-reverse (cdr l))
+     (cons (deep-reverse (car l)) '())))
+   (else
+    (append1 (deep-reverse (cdr l)) (list (car l))))))
 
-;      (append1 (reverse1 (cdr l)) (list (car l)))
+					;      (append1 (reverse1 (cdr l)) (list (car l)))
 
 
-;2.28
+					;2.28
 (define (fringe x)
   (cond
-    ((null? x) '())
-    ((list? (car x))
-     (append
-       (fringe (car x))
-       (fringe (cdr x))))
-    (else
-      (cons (car x) (fringe (cdr x)))      
-      )))
+   ((null? x) '())
+   ((list? (car x))
+    (append
+     (fringe (car x))
+     (fringe (cdr x))))
+   (else
+    (cons (car x) (fringe (cdr x)))      
+    )))
 
-; 2.29
+					; 2.29
 (define (make-mobile left right)
   (list left right))
 
@@ -124,58 +124,58 @@
 
 (define (total-weight mobile)
   (cond
-    ((null? mobile) 0)
-    ((number? mobile) mobile)
-    (else
-      (+ (total-weight
-           (cond
-             ((null? (left-branch mobile)) 0)
-             (else
-               (total-weight
-                 (branch-structure (left-branch mobile))))))
-         (total-weight (cond
-                         ((null? (right-branch mobile)) 0)
-                         (else
-                           (total-weight
-                             (branch-structure (right-branch mobile))))))
-         ))))
+   ((null? mobile) 0)
+   ((number? mobile) mobile)
+   (else
+    (+ (total-weight
+        (cond
+         ((null? (left-branch mobile)) 0)
+         (else
+          (total-weight
+           (branch-structure (left-branch mobile))))))
+       (total-weight (cond
+                      ((null? (right-branch mobile)) 0)
+                      (else
+                       (total-weight
+                        (branch-structure (right-branch mobile))))))
+       ))))
 
 (define (example-binary-mobile)
   (make-mobile
-    (make-branch
-      2
+   (make-branch
+    2
+    (make-mobile
+     (make-branch
+      999
       (make-mobile
-        (make-branch
-          999
-          (make-mobile
-            (make-branch 1 2)
-            (make-branch 1 5)
-            )
-          )
-        (make-branch 3 1)
-        )
+       (make-branch 1 2)
+       (make-branch 1 5)
+       )
       )
-    (make-branch
-      4
-      (make-mobile
-        (make-branch 100 3)
-        (make-branch 200 900)))))
+     (make-branch 3 1)
+     )
+    )
+   (make-branch
+    4
+    (make-mobile
+     (make-branch 100 3)
+     (make-branch 200 900)))))
 
 (define (balanced? mobile)
   (define (torque branch)
     (*
-      (branch-length branch)
-      (total-weight (branch-structure branch))))
+     (branch-length branch)
+     (total-weight (branch-structure branch))))
 
   (cond
-    ((not (pair? mobile)) #t)
-    (else
-      (and
-        (=
-          (torque (left-branch mobile))
-          (torque (right-branch mobile)))
-        (balanced? (branch-structure (left-branch mobile)))
-        (balanced? (branch-structure (right-branch mobile)))))))
+   ((not (pair? mobile)) #t)
+   (else
+    (and
+     (=
+      (torque (left-branch mobile))
+      (torque (right-branch mobile)))
+     (balanced? (branch-structure (left-branch mobile)))
+     (balanced? (branch-structure (right-branch mobile)))))))
 
 
 
@@ -188,15 +188,15 @@
              (* sub-tree factor)))
        tree))
 
-; 2.30
+					; 2.30
 (define (square-tree1 tree)
   (cond
-    ((null? tree) '())
-    ((not (pair? tree)) (* tree tree))
-    (else
-      (cons
-        (square-tree1 (car tree))
-        (square-tree1 (cdr tree))))))
+   ((null? tree) '())
+   ((not (pair? tree)) (* tree tree))
+   (else
+    (cons
+     (square-tree1 (car tree))
+     (square-tree1 (cdr tree))))))
 
 (define (square-tree2 tree)
   (map (lambda (sub-tree)
@@ -206,7 +206,7 @@
              )
          ) tree))
 
-; 2.31
+					; 2.31
 
 (define (tree-map func tree)
   (map (lambda (sub-tree)
@@ -218,19 +218,19 @@
 (define (square-tree tree)
   (tree-map square tree))
 
-; 2.32
-; set of all subset
+					; 2.32
+					; set of all subset
 
 (define (subsets s)
   (if (null? s)
       (list '())
       (let ((rest (subsets (cdr s))))
-       (append
+	(append
          rest
          (map
-           (lambda (x) ;; concatenate the first element with every other element of the rest
-             (cons (car s) x))
-           rest)))))
+          (lambda (x) ;; concatenate the first element with every other element of the rest
+            (cons (car s) x))
+          rest)))))
 
 ;; Sequences as Conventional Interfaces
 
@@ -241,17 +241,17 @@
              (square tree)
              0))
         (else
-          (+
-            (sum-odd-squares (car tree))
-            (sum-odd-squares (cdr tree))))))
+         (+
+          (sum-odd-squares (car tree))
+          (sum-odd-squares (cdr tree))))))
 
 (define (filter predicate sequence)
   (cond
-    ((null? sequence) '())
-    ((predicate (car sequence))
-     (cons (car sequence) (filter predicate (cdr sequence))))
-    (else
-      (filter predicate (cdr sequence)))))
+   ((null? sequence) '())
+   ((predicate (car sequence))
+    (cons (car sequence) (filter predicate (cdr sequence))))
+   (else
+    (filter predicate (cdr sequence)))))
 
 (define (accumulate op initial sequence)
   (if (null? sequence)
@@ -265,12 +265,12 @@
 
 (define (enumerate-tree tree)
   (cond
-    ((null? tree) '())
-    ((not (pair? tree)) (list tree))
-    (else
-      (append
-        (enumerate-tree (car tree))
-        (enumerate-tree (cdr tree))))))
+   ((null? tree) '())
+   ((not (pair? tree)) (list tree))
+   (else
+    (append
+     (enumerate-tree (car tree))
+     (enumerate-tree (cdr tree))))))
 
 (define (sum-odd-square1 tree)
   (accumulate + 0
@@ -301,19 +301,19 @@
 ;; 2.33
 (define (alternative-map p sequence)
   (accumulate
-    (lambda (x accumulated) 
-      (cons (p x) accumulated))
-    '()
-    sequence
-    ))
+   (lambda (x accumulated) 
+     (cons (p x) accumulated))
+   '()
+   sequence
+   ))
 ;; (accumulate op initial sequence)
 (define (alternative-append seq1 seq2)
   (accumulate cons seq2 seq1))
 
 (define (alternative-length sequence)
   (accumulate 
-    (lambda (x y) (+ 1 y))
-    0 sequence))
+   (lambda (x y) (+ 1 y))
+   0 sequence))
 
 ;; 2.34
 
@@ -391,4 +391,56 @@
 (define (reverse1 sequence)
   (fold-left
    (lambda (x y) (cons x y)) '() sequence))
+
+;; Nested mappings
+(define (prime? a)
+  (define (primee n)
+    (cond
+     ((<= n 1) 1)
+     ((= (modulo a n) 0) 0)
+     (else (primee (- n 1)))))
+  (primee (round (/ a 2))))
+
+(define (neste-mapping-example1 n)
+  (accumulate append
+	      '()
+	      (map (lambda (i)
+		     (map (lambda (j)
+			    (list i j))
+			  (enumerate-interval 1 (- i 1))))
+		   (enumerate-interval 1 n))))
+
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+
+(define (prime-sum? pair)
+  (prime? (+ (car pair) (cadr pair))))
+
+(define (make-pair-sum pair)
+  (list
+   (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+
+(define (prime-sum-pairs n)
+  (map make-pair-sum
+       (filter prime-sum?
+	       (flatmap
+		(lambda (i)
+		  (map (lambda (j) (list i j))
+		       (enumerate-interval 1 (- i 1))))
+		(enumerate-interval 1 n)))))
+
+(define (remove x s)
+  (filter (lambda (a) (not (= x a))) s))
+
+(define (permutations s)
+  (if (null? s)
+      (list '())
+      (flatmap (lambda (x)
+		 (map (lambda (p) (cons x p))
+		      (permutations (remove x s))))
+	       s)))
+
+
+;; ex 2.40
+
 
