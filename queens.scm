@@ -63,3 +63,20 @@
   (if (= 1 n)
       1
       (* n (fact (- n 1)))))
+
+;; ex 2.43
+;; slow version still works
+
+(define (queens-slow board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+	(list empty-board)
+	(filter
+	 (lambda (positions) (safe? k positions))
+	 (flatmap
+	  (lambda (new-row)
+	    (map (lambda (rest-of-queens)
+		   (adjoin-position new-row k rest-of-queens))
+		 (queen-cols (- k 1))))
+	  (enumerate-interval 1 board-size)))))
+  (queen-cols board-size))
