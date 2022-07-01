@@ -1,0 +1,11 @@
+#lang sicp
+(#%require sicp-pict)
+(define image (bitmap->painter "test.jpeg"))
+(paint-hires (below (beside image
+				(rotate90 image))
+				   (beside (rotate270 image)
+					(rotate180 image))))
+
+(paint-hires (beside image (flip-vert image)))
+(paint-hires (below (rotate90 image) (flip-vert image)))
+
