@@ -1,11 +1,120 @@
 #lang sicp
 (#%require sicp-pict)
 (define image (bitmap->painter "test.jpeg"))
-(paint-hires (below (beside image
-				(rotate90 image))
-				   (beside (rotate270 image)
-					(rotate180 image))))
 
-(paint-hires (beside image (flip-vert image)))
-(paint-hires (below (rotate90 image) (flip-vert image)))
+;(paint-hires (beside image (flip-vert image)))
+;(paint-hires (below (rotate90 image) (flip-vert image)))
+
+;(paint-hires (beside image (beside image (flip-vert image))))
+
+(define (flipped-pairs painter)
+  (let ((painter2 (beside painter (flip-vert painter))))
+    (below painter2 painter2)))
+
+(define (right-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (right-split painter (- n 1))))
+        (beside painter (below smaller smaller)))))
+
+;; ex 2.44 up-split
+(define (up-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (up-split painter (- n 1))))
+        (below painter (beside smaller smaller)))))
+
+
+(define (corner-split painter n)
+  (if (= n 0)
+      painter
+      (let ((up (up-split painter (- n 1)))
+            (right (right-split painter (- n 1))))
+        (let ((top-left (beside up up))
+              (bottom-right (below right right))
+              (corner (corner-split painter (- n 1))))
+          (beside (below painter top-left)
+                  (below bottom-right corner))))))
+
+(define (square-limit painter n)
+  (let ((quarter (corner-split painter n)))
+    (let ((half (beside (flip-horiz quarter) quarter)))
+      (below (flip-vert half) half))))
+
+
+(define (square-of-four tl tr bl br)
+  (lambda (painter)
+    (let ((top (beside (tl painter) (tr painter)))
+          (bottom (beside (bl painter) (br painter))))
+      (below bottom top))))
+
+(define (flipped-pairs-alt painter)
+  (let ((combine4 (square-of-four identity flip-vert
+                                  identity flip-vert)))
+    (combine4 painter)))
+
+(define (square-limit-alt painter n)
+  (let ((combine4 (square-of-four flip-horiz identity
+                                  rotate180 flip-vert)))
+    (combine4 (corner-split painter n))))
+
+;; exercise 2.45
+(define (split first second)
+  (lambda (picture n)
+    (if (= n 0)
+        picture
+        (let ((smaller ((split first second) picture (- n 1))))
+          (first picture (second smaller smaller))))))
+
+(define right-split-alt (split beside below))
+(define up-split-alt (split below beside))
+
+
+;; ex 2.46
+(define (make-vect x y)
+  (list x y))
+
+(define (xcor-vect vect)
+  (car vect))
+
+(define (ycor-vect vect)
+  (cadr vect))
+
+(define (add-vect v1 v2)
+  (list
+   (+ (xcor-vect v1) (xcor-vect v2))
+   (+ (ycor-vect v1) (ycor-vect v2))))
+
+(define (sub-vect v1 v2)
+  (list
+   (- (xcor-vect v1) (xcor-vect v2))
+   (- (ycor-vect v1) (ycor-vect v2))))
+
+(define (scale-vect s v1)
+  (list
+   (* s (xcor-vect v1))
+   (* s (ycor-vect v1))))
+
+;; ex 2.47
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+
+(define (origin-frame frame)
+  (car frame))
+
+(define (edge1-frame frame)
+  (cadr frame))
+
+(define (edge2-frame frame)
+  (caddr (frame)))
+
+(define (frame-coord-map frame)
+  (lambda (v)
+    (add-vect
+     (origin-frame frame)
+     (add-vect (scale-vect (xcor-vect v)
+                           (edge1-frame frame))
+               (scale-vect (ycor-vect v)
+                           (edge2-frame frame))))))
+
 
