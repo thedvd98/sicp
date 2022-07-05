@@ -106,7 +106,19 @@
   (cadr frame))
 
 (define (edge2-frame frame)
-  (caddr (frame)))
+  (caddr frame))
+;;alternative way for rapresenting data
+(define (make-frame-alt origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+
+(define (origin-frame-alt frame)
+  (car frame))
+
+(define (edge1-frame-alt frame)
+  (cadr frame))
+
+(define (edge2-frame-alt frame)
+  (cdr (cdr frame)))
 
 (define (frame-coord-map frame)
   (lambda (v)
@@ -116,5 +128,49 @@
                            (edge1-frame frame))
                (scale-vect (ycor-vect v)
                            (edge2-frame frame))))))
+(define a-frame (make-frame (make-vect 0 0) (make-vect 1 0) (make-vect 0 1)))
 
+;; Painters
+;(define (make-segment v1 v2)
+;  (list v1 v2))
+
+;(define (start-segment s)
+;  (car s))
+;(define (end-segment s)
+;  (cadr s))
+
+
+;(define (segments->painter segment-list)
+;  (lambda (frame)
+;    (for-each
+;     (lambda (segment)
+;       (draw-line
+;        ((frame-coord-map frame) (start-segment segment))
+;        ((frame-coord-map frame) (end-segment segment))))
+;     segment-list)))
+;; (make-segment (vect 1 1) (vect 0 0))
+;;#(struct:segment #(struct:vect 1 1) #(struct:vect 0 0))
+;; Exercise 2.49
+
+(define (X)
+  (segments->painter
+   (list
+    (make-segment (vect 0 0) (vect 1 1))
+    (make-segment (vect 0 1) (vect 1 0)))))
+
+(define (outline-frame)
+  (segments->painter
+   (list
+    (make-segment (vect 0 0) (vect 1 0))
+    (make-segment (vect 1 0) (vect 1 1))
+    (make-segment (vect 1 1) (vect 0 1))
+    (make-segment (vect 0 1) (vect 0 0)))))
+
+(define (diamond-shape)
+  (segments->painter
+   (list
+    (make-segment (vect 0.5 0) (vect 1 0.5))
+    (make-segment (vect 1 0.5) (vect 0.5 1))
+    (make-segment (vect 0.5 1) (vect 0 0.5))
+    (make-segment (vect 0 0.5) (vect 0.5 0)))))
 
