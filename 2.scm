@@ -478,3 +478,27 @@
   (filter (lambda (a)
 	    (eq? s (cadddr a)))
    (map make-triple-sum (unique-triples n))))
+
+;; 2.3 Symbolic Data
+;; C-M-x execute in emacs
+
+(define (memq item x)
+  (cond
+   ((null? x) '())
+   ((eq? item (car x)) x)
+   (else
+    (memq item (cdr x)))))
+
+;; ex 2.54
+(define (equal?-alt seq1 seq2)
+  (cond
+   ((and (null? seq1) (null? seq2)) #t)
+   ((or (null? seq1) (null? seq2)) #f)
+   ((and (list? seq1) (list? seq2))
+    (and (equal?-alt (car seq1) (car seq2)) (equal?-alt (cdr seq1) (cdr seq2))))
+   ((and (not (pair? seq1)) (not (pair? seq2)))
+    (eq? seq1 seq2))
+   (else
+    #f)))
+
+
