@@ -46,12 +46,20 @@
 (define (addend x)
   (and (sum? x) (cadr x)))
 (define (augend x)
-  (caddr x))
+  (cond
+   ((pair? (cdddr x))
+    (make-sum (caddr x) (augend (cdr x))))
+   (else
+    (caddr x))))
 
 (define (multiplier p)
   (cadr p))
 (define (multiplicand p)
-  (caddr p))
+  (cond
+   ((pair? (cdddr p))
+    (make-product (caddr p) (multiplicand (cdr p))))
+   (else
+    (caddr p))))
 
 (define (base p)
   (cadr p))
