@@ -1,4 +1,7 @@
 ;; Chapter 3.2.3
+;; ex 2.56
+;; ex 2.57
+;; ex 2.58
 
 (define (variable? x)
   (symbol? x))
@@ -24,10 +27,21 @@
    (else
     (list '* a1 a2))))
 
+(define (make-exponentiation a1 a2)
+  (cond
+   ((eq? a1 0) 0)
+   ((eq? a2 0) 1)
+   ((eq? a2 1) a1)
+   (else
+    (list '** a1 a2))))
+
 (define (sum? x)
   (and (pair? x) (eq? '+ (car x))))
 (define (product? x)
   (and (pair? x) (eq? '* (car x))))
+(define (exponentiation? x)
+  (and (pair? x) (eq? '** (car x))))
+
 
 (define (addend x)
   (and (sum? x) (cadr x)))
@@ -37,6 +51,11 @@
 (define (multiplier p)
   (cadr p))
 (define (multiplicand p)
+  (caddr p))
+
+(define (base p)
+  (cadr p))
+(define (exponent p)
   (caddr p))
 
 (define (deriv exp var)
@@ -53,5 +72,10 @@
                    (multiplicand exp))
      (make-product (multiplier exp)
                    (deriv (multiplicand exp) var))))
+   ((exponentiation? exp)
+    (make-product (exponent exp)
+                  (make-exponentiation (base exp)
+                                       (make-sum (base exp) (- 1))))
+    )
    (else
     (print "Error"))))
