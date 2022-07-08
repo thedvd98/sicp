@@ -15,7 +15,7 @@
    ((eq? a2 0) a1)
    ((and (number? a1) (number? a2)) (+ a1 a2))
    (else
-    (list '+ a1 a2))))
+    (list a1 '+ a2))))
 
 (define (make-product a1 a2)
   (cond
@@ -25,7 +25,7 @@
    ((eq? a2 1) a1)
    ((and (number? a1) (number? a2)) (* a1 a2))
    (else
-    (list '* a1 a2))))
+    (list a1 '* a2))))
 
 (define (make-exponentiation a1 a2)
   (cond
@@ -33,18 +33,18 @@
    ((eq? a2 0) 1)
    ((eq? a2 1) a1)
    (else
-    (list '** a1 a2))))
+    (list a1 '** a2))))
 
 (define (sum? x)
-  (and (pair? x) (eq? '+ (car x))))
+  (and (pair? x) (eq? '+ (cadr x))))
 (define (product? x)
-  (and (pair? x) (eq? '* (car x))))
+  (and (pair? x) (eq? '* (cadr x))))
 (define (exponentiation? x)
-  (and (pair? x) (eq? '** (car x))))
+  (and (pair? x) (eq? '** (cadr x))))
 
 
 (define (addend x)
-  (and (sum? x) (cadr x)))
+  (and (sum? x) (car x)))
 (define (augend x)
   (cond
    ((pair? (cdddr x))
@@ -53,7 +53,7 @@
     (caddr x))))
 
 (define (multiplier p)
-  (cadr p))
+  (car p))
 (define (multiplicand p)
   (cond
    ((pair? (cdddr p))
@@ -62,7 +62,7 @@
     (caddr p))))
 
 (define (base p)
-  (cadr p))
+  (car p))
 (define (exponent p)
   (caddr p))
 
