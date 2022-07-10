@@ -15,6 +15,7 @@
    ((eq? a2 0) a1)
    ((and (number? a1) (number? a2)) (+ a1 a2))
    (else
+
     (list '+ a1 a2))))
 
 (define (make-product a1 a2)
@@ -66,6 +67,53 @@
 (define (exponent p)
   (caddr p))
 
+;;
+
+(define (prefix->infix exp)
+  (if (not (pair? exp))
+      exp
+      (let ((op (car exp))
+            (a1 (cadr exp))
+            (a2 (caddr exp)))
+        (list (prefix->infix a1) op (prefix->infix a2)))))
+
+(define (infix->prefix exp)
+  (if (not (pair? exp))
+      exp
+      (let ((op (cadr exp))
+            (a1 (car exp))
+            (a2 (caddr exp)))
+        (list op (infix->prefix a1) (infix->prefix a2)))))
+
+(define (getop exp)
+  (if (null? (cdr exp))
+      '()
+      (cadr exp)))
+
+;;((pair? (car exp))
+;; (iter (car exp)))
+;;((and (pair? exp) (pair? (caddr exp)))
+;; (iter (caddr exp)))
+
+(define (put-parenthesis exp)
+  (define (iter exp)
+    (cond
+     ((null? exp) '())
+     ((eq? (getop exp) '+)
+      (list
+       (car exp) '+ (iter (cddr exp))))
+     ((eq? (getop exp) '*)
+      (let ((product (list (car exp) '* (caddr exp))))
+        (iter (cons product (cdddr exp)))))
+     ((eq? (getop exp) '**)
+      (let ((e (list (car exp) '** (caddr exp))))
+        (iter (cons e (cdddr exp)))))
+     ((or (number? (car exp)) (variable? (car exp)))
+      (car exp))
+     (else
+      exp)))
+  (iter exp))
+
 (define (deriv exp var)
   (cond
    ((number? exp) 0)
@@ -87,3 +135,6 @@
     )
    (else
     (print "Error"))))
+
+(define (deriv-infix exp var)
+  (prefix->infix (deriv (infix->prefix exp) var)))
