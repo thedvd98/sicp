@@ -86,9 +86,10 @@
         (list op (infix->prefix a1) (infix->prefix a2)))))
 
 (define (getop exp)
-  (if (null? (cdr exp))
-      '()
-      (cadr exp)))
+  (cond
+   ((null? exp) '())
+   ((null? (cdr exp)) '())
+   (else (cadr exp))))
 
 ;;((pair? (car exp))
 ;; (iter (car exp)))
@@ -100,16 +101,33 @@
     (cond
      ((null? exp) '())
      ((eq? (getop exp) '+)
+      (print "piú: " exp)
       (list
-       (car exp) '+ (iter (cddr exp))))
+       (if (pair? (car exp))
+           (iter (car exp))
+           (car exp))
+       '+ (iter (cddr exp))))
      ((eq? (getop exp) '*)
-      (let ((product (list (car exp) '* (caddr exp))))
+      (print "per: " exp)
+      (let ((product (list
+                      (if (pair? (car exp))
+                          (iter (car exp))
+                          (car exp))
+                      '*
+                      (if (pair? (caddr exp))
+                          (iter (caddr exp))
+                          (caddr exp)))))
+        (print "product: " product)
         (iter (cons product (cdddr exp)))))
      ((eq? (getop exp) '**)
       (let ((e (list (car exp) '** (caddr exp))))
         (iter (cons e (cdddr exp)))))
      ((or (number? (car exp)) (variable? (car exp)))
+      (print "number: " exp)
       (car exp))
+     ((pair? (car exp))
+      (print "ciao " (car exp))
+      (iter (car exp)))
      (else
       exp)))
   (iter exp))
