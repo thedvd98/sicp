@@ -122,12 +122,12 @@
       exp)))
   (iter exp))
 
-(define (put-parens exp)
+(define (put-parens exp op)
   (define (iter exp op)
     (cond
      ((null? exp) '())
      ((or (number? exp) (symbol? exp)) exp)
-     ((not (pair? (cdr exp))) (list (car exp)))
+     ((not (pair? (cdr exp))) (car exp)) ;; when free last elem
      ((eq? (cadr exp) op)
       (let
           ((a (list
@@ -136,12 +136,11 @@
                (iter (caddr exp) op))))
         (iter (cons a (cdddr exp)) op)))
      (else
-      (append
-       (list (iter (car exp) op)
-             (cadr exp))
-       (iter (cddr exp) op)))
-     ))
-  (iter (iter (iter exp '**) '*) '+))
+      (list
+       (iter (car exp) op)
+       (cadr exp)
+       (iter (cddr exp) op)))))
+  (iter exp op))
 
 (define (deriv exp var)
   (cond
