@@ -88,13 +88,9 @@
 (define (getop exp)
   (cond
    ((null? exp) '())
+   ((or (number? exp) (symbol? exp)) '())
    ((null? (cdr exp)) '())
    (else (cadr exp))))
-
-;;((pair? (car exp))
-;; (iter (car exp)))
-;;((and (pair? exp) (pair? (caddr exp)))
-;; (iter (caddr exp)))
 
 (define (put-parenthesis exp)
   (define (iter exp)
@@ -103,34 +99,49 @@
      ((eq? (getop exp) '+)
       (print "piú: " exp)
       (list
-       (if (pair? (car exp))
-           (iter (car exp))
-           (car exp))
+       (iter (car exp))
        '+ (iter (cddr exp))))
      ((eq? (getop exp) '*)
       (print "per: " exp)
       (let ((product (list
-                      (if (pair? (car exp))
-                          (iter (car exp))
-                          (car exp))
+                      (iter (car exp))
                       '*
-                      (if (pair? (caddr exp))
-                          (iter (caddr exp))
-                          (caddr exp)))))
+                      (iter (caddr exp)))))
         (print "product: " product)
-        (iter (cons product (cdddr exp)))))
+        (cons product (iter (cons '() (cdddr exp))))))
      ((eq? (getop exp) '**)
       (let ((e (list (car exp) '** (caddr exp))))
         (iter (cons e (cdddr exp)))))
-     ((or (number? (car exp)) (variable? (car exp)))
+     ((or (number? exp) (variable? exp))
       (print "number: " exp)
-      (car exp))
+      exp)
      ((pair? (car exp))
       (print "ciao " (car exp))
       (iter (car exp)))
      (else
       exp)))
   (iter exp))
+
+(define (put-parens exp)
+  (define (iter exp op)
+    (cond
+     ((null? exp) '())
+     ((or (number? exp) (symbol? exp)) exp)
+     ((not (pair? (cdr exp))) (list (car exp)))
+     ((eq? (cadr exp) op)
+      (let
+          ((a (list
+               (iter (car exp) op)
+               (cadr exp)
+               (iter (caddr exp) op))))
+        (iter (cons a (cdddr exp)) op)))
+     (else
+      (append
+       (list (iter (car exp) op)
+             (cadr exp))
+       (iter (cddr exp) op)))
+     ))
+  (iter (iter (iter exp '**) '*) '+))
 
 (define (deriv exp var)
   (cond
