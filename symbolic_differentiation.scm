@@ -92,37 +92,10 @@
    ((null? (cdr exp)) '())
    (else (cadr exp))))
 
-(define (put-parenthesis exp)
-  (define (iter exp)
-    (cond
-     ((null? exp) '())
-     ((eq? (getop exp) '+)
-      (print "piú: " exp)
-      (list
-       (iter (car exp))
-       '+ (iter (cddr exp))))
-     ((eq? (getop exp) '*)
-      (print "per: " exp)
-      (let ((product (list
-                      (iter (car exp))
-                      '*
-                      (iter (caddr exp)))))
-        (print "product: " product)
-        (cons product (iter (cons '() (cdddr exp))))))
-     ((eq? (getop exp) '**)
-      (let ((e (list (car exp) '** (caddr exp))))
-        (iter (cons e (cdddr exp)))))
-     ((or (number? exp) (variable? exp))
-      (print "number: " exp)
-      exp)
-     ((pair? (car exp))
-      (print "ciao " (car exp))
-      (iter (car exp)))
-     (else
-      exp)))
-  (iter exp))
-
-(define (put-parens exp op)
+;;
+;; example: (put-parens a '(+ * **))
+;; prioritá all'ultimo elemento della lista
+(define (put-parens exp ops)
   (define (iter exp op)
     (cond
      ((null? exp) '())
@@ -136,11 +109,19 @@
                (iter (caddr exp) op))))
         (iter (cons a (cdddr exp)) op)))
      (else
-      (list
-       (iter (car exp) op)
-       (cadr exp)
-       (iter (cddr exp) op)))))
-  (iter exp op))
+      (append
+       (list (iter (car exp) op)
+       (cadr exp))
+       (let ((a (iter (cddr exp) op)))
+         (if (or (symbol? a) (number? a))
+             (list a)
+             a)
+           )))))
+  (define (do-order exp ops)
+    (if (null? ops)
+        exp
+        (iter (do-order exp (cdr ops)) (car ops))))
+  (do-order exp ops))
 
 (define (deriv exp var)
   (cond
@@ -166,3 +147,6 @@
 
 (define (deriv-infix exp var)
   (prefix->infix (deriv (infix->prefix exp) var)))
+
+(define (deriv-free-infix exp var)
+  (prefix->infix (deriv (infix->prefix (put-parens exp '(+ * **))) var)))
