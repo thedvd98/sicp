@@ -57,3 +57,47 @@
 (define (union-set-dup set1 set2)
   (append set1 set2))
 
+;; Sets as ordered lists of numbers
+
+(define (element-of-set-ord? x set)
+  (cond
+   ((null? set) #f)
+   ((= x (car set)) #t)
+   ((< x (car set)) #f)
+   (else
+    (element-of-set-ord? x (cdr set)))))
+
+(define (intersection-set-ord set1 set2)
+  (cond
+   ((or (null? set1) (null? set2)) '())
+   ((= (car set1) (car set2))
+    (cons (car set1)
+          (intersection-set-ord (cdr set1) (cdr set2))))
+   ((< (car set1) (car set2))
+    (intersection-set (cdr set1) set2))
+   ((> (car set1) (car set2))
+    (intersection-set set1 (cdr set2)))
+   ))
+
+;; ex 2.61
+(define (adjoin-set-ord x set)
+  (cond
+   ((null? set) (list x))
+   ((= x (car set)) set)
+   ((> x (car set)) (cons (car set) (adjoin-set-ord x (cdr set))))
+   ((< x (car set)) (cons x set))))
+
+;;ex 2.62
+(define (union-set-ord set1 set2)
+  (cond
+   ((null? set1) set2)
+   ((null? set2) set1)
+   ((> (car set1) (car set2))
+    (cons (car set2) (union-set-ord set1 (cdr set2))))
+   ((> (car set2) (car set1))
+    (cons (car set1) (union-set-ord (cdr set1) set2)))
+   (else
+    (union-set-ord set1 (cdr set2)))))
+;; Sets as binary trees
+
+
