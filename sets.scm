@@ -97,7 +97,38 @@
    ((> (car set2) (car set1))
     (cons (car set1) (union-set-ord (cdr set1) set2)))
    (else
-    (union-set-ord set1 (cdr set2)))))
+    (cons (car set1)(union-set-ord (cdr set1) (cdr set2))))))
+
+
 ;; Sets as binary trees
 
+(define (entry tree)
+  (car tree))
+(define (left-branch tree)
+  (cadr tree))
+(define (right-branch tree)
+  (caddr tree))
+(define (make-tree entry left right)
+  (list entry left right))
+
+(define (element-of-set-bin? x set)
+  (cond
+   ((null? set) #f)
+   ((= x (entry set)) #t)
+   ((< x (entry set)) (element-of-set-bin? x (left-branch set)))
+   ((> x (entry set)) (element-of-set-bin? x (right-branch set)))))
+
+
+(define (adjoin-bin x set)
+  ((cond
+    ((null? set) (make-tree x '() '()))
+    ((= x (entry set)) set)
+    ((< x (entry set)) (make-tree
+                        (entry set)
+                        (adjoin-bin x (left-branch set))
+                        (right-branch set)))
+    ((> x (entry set)) (make-tree
+                        (entry set)
+                        (left-branch set)
+                        (adjoin-bin x (right-branch set)))))))
 
