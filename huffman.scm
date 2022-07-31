@@ -6,6 +6,7 @@
   (list 'leaf symbol weight))
 (define (leaf? object)
   (eq? (car object) 'leaf))
+
 (define (symbol-leaf x)
   (cadr x))
 (define (weight-leaf x)
@@ -49,6 +50,7 @@
         (else
          (print "bad bit " bit))))
 
+;;ex 2.67
 (define sample-tree
   (make-code-tree (make-leaf 'A 4)
                   (make-code-tree
@@ -57,3 +59,86 @@
                                    (make-leaf 'C 1)))))
 
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+(define sample-result (decode sample-message sample-tree))
+;; '(A D A B B C A)
+
+;; ex 2.68
+(define (contain-symbol? sym l)
+  (cond ((null? l) #f)
+        ((eq? (car l) sym) #t)
+        (else
+         (contain-symbol? sym (cdr l)))))
+(define (get-symbols branch)
+  (cond
+   ((null? branch) '())
+   ((leaf? branch) '())
+   (else
+    (caddr branch))))
+
+(define (encode-symbol sym tree)
+  (let ((left (left-branch tree))
+        (right (right-branch tree)))
+    (cond ((null? tree) '())
+          ((and (leaf? left)
+                (eq? sym (symbol-leaf left))) '(0))
+          ((and (leaf? right)
+                (eq? sym (symbol-leaf right))) '(1))
+          ((and (not (leaf? left))
+                (contain-symbol? sym (get-symbols left)))
+           (cons 0 (encode-symbol sym left)))
+          ((and (not (leaf? right))
+                (contain-symbol? sym (get-symbols right)))
+           (cons 1 (encode-symbol sym right)))
+          (else
+           (print "Error Symbol not in the tree")
+           '()))))
+
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message) tree)
+              (encode (cdr message) tree))))
+
+;; ex 2.69
+(define (adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else
+         (cons (car set)
+               (adjoin-set x (cdr set))))))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)
+                               (cadr pair))
+                    (make-leaf-set (cdr pairs))))))
+
+;; make-code-tree and make-leaf
+(define (successive-merge sets)
+  (define (iter sets tree)
+    (cond ((null? sets) tree)
+          ((null? (cdr sets))
+           (make-code-tree (car sets)
+                           tree))
+          ((= (weight-leaf (car sets))
+              (weight-leaf (cadr sets)))
+           (iter (cddr sets)
+                 (if (not (null? tree))
+                  (make-code-tree tree
+                                  (make-code-tree (car sets)
+                                                  (cadr sets)))
+                  (make-code-tree (car sets)
+                                  (cadr sets)))))
+          (else
+           (iter (cdr sets)
+                 (make-code-tree (car sets) tree)))))
+  (iter sets '()))
+
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+
+(define sample-pairs '((D 1) (C 1) (B 2) (A 4)))
+(define sample-pairs2 '((G 1) (H 1) (E 1) (F 1) (D 1) (C 1) (B 3) (A 8)))
+
