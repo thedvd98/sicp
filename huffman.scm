@@ -136,9 +136,24 @@
                  (make-code-tree (car sets) tree)))))
   (iter sets '()))
 
+(define (successive-merge sets)
+  (if (null? (cdr sets))
+      (car sets)
+      (successive-merge (adjoin-set (make-code-tree (car sets)
+                                                    (cadr sets))
+                                    (cddr sets)))))
+
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 
 (define sample-pairs '((D 1) (C 1) (B 2) (A 4)))
 (define sample-pairs2 '((G 1) (H 1) (E 1) (F 1) (D 1) (C 1) (B 3) (A 8)))
 
+;; ex 2.70
+(define rock-pairs '((A 2) (BOOM 1) (GET 2) (JOB 2) (NA 16) (SHA 3) (YIP 9) (WAH 1)))
+(define rock-tree (generate-huffman-tree rock-pairs))
+(define song
+  '(GET A JOB SHA NA NA NA NA NA NA NA NA
+        GET A JOB SHA NA NA NA NA NA NA NA NA
+        WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP
+        SHA BOOM))
