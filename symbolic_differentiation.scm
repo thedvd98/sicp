@@ -150,3 +150,4 @@
 
 (define (deriv-free-infix exp var)
   (prefix->infix (deriv (infix->prefix (put-parens exp '(+ * **))) var)))
+
