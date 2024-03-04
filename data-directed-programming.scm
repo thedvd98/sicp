@@ -235,13 +235,19 @@ tagged with division id
 (define (find-employee-record employee-name file-list)
   (define (search-record name file)
     (get-record name file))
+
+  ;; mutually recursive
+  (define (search-record name file-list)
+    (let ((record (get-record name (car file-list))))
+      (if (null? record)
+          (find-in-files name (cdr file-list))
+          record)))
+
   (define (find-in-files name file-list)
     (if (null? file-list)
         '()
-        (let ((record (search-record name (car file-list))))
-          (if (null? record )
-              (find-in-files name (cdr file-list))
-              record))))
+        (search-record name file-list)))
+
   (find-in-files employee-name file-list))
 
 ;; d. ?
@@ -261,7 +267,10 @@ tagged with division id
   (print (get-record 'pluto file2))
   (print (get-record 'hello file2))
 
+  (print "find-exmployee-record")
+
   (print (find-employee-record 'pippo (list file1 file2)))
+  (print (find-employee-record 'hi (list file1 file2)))
   (print (find-employee-record 'notexist (list file1 file2)))
 
   (print "get-salary")
