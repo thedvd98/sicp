@@ -179,9 +179,10 @@ tagged with division id
          (else (search employee (cdr file))))))
     (search employee file))
 
-  (define (get-salary employee file)
-    'TODO
-    )
+  (define (get-salary record)
+    (cond ((null? record) '())
+          (else
+           (cadr record))))
   (put 'get-record 'division1 get-record)
 
   'done)
@@ -196,6 +197,10 @@ tagged with division id
          (else (search employee (cdr file))))))
     (search employee file))
 
+  (define (get-salary record)
+    (cond ((null? record) '())
+          (else
+           (caddr record))))
   (put 'get-record 'division2 get-record)
 
   'done)
@@ -219,7 +224,7 @@ tagged with division id
 ;; b.
 (define (get-salary employee-name file)
   (let ((record (get-record employee-name file)))
-    ((get 'get-salary (type-tag record)) employee-name record)))
+    ((get 'get-salary (type-tag record)) (contents record))))
 
 ;; c.
 (define (find-employee-record employee-name file-list)
@@ -252,6 +257,10 @@ tagged with division id
 
   (print (find-employee-record 'pippo (list file1 file2)))
   (print (find-employee-record 'notexist (list file1 file2)))
+
+  (print (get-salary 'pippo file1))
+  (print (get-salary 'hi file2))
+  (print (get-salary 'pippo file2))
 
   )
 
