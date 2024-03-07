@@ -250,7 +250,9 @@ tagged with division id
 
   (find-in-files employee-name file-list))
 
-;; d. ?
+;; d.
+;; I make a new function install-divisionN and execute it.
+
 
 (define (test-ex274)
   (define file1 (list 'division1 '(pippo (salary 10) (address 1998)) '(pluto (salary 10) (address 1998)) '(alfonso (salary 8888) (address 9))))
@@ -277,7 +279,34 @@ tagged with division id
 
   (print (get-salary 'pippo file1))
   (print (get-salary 'hi file2))
-  (print (get-salary 'pippo file2))
+  (print (get-salary 'pippo file2)))
 
-  )
+;; Message Passing
+
+(define (make-from-real-imag x y)
+  (define (dispatch op)
+    (cond ((eq? op 'real-part) x)
+          ((eq? op 'imag-part) y)
+          ((eq? op 'magnitude)
+           (sqrt (+ (square x) (square y))))
+          ((eq? op 'angle) (atan y x))
+          (else
+           (error "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
+  dispatch)
+
+;; ex 2.75
+(define (make-from-mag-ang x y)
+  (define (dispatch op)
+    (cond ((eq? op 'real-part)
+           (* x (cos y)))
+          ((eq? op 'imag-part)
+           (* x (sin y)))
+          ((eq? op 'magnitude) x)
+          ((eq? op 'angle) y)
+          (else
+           (error "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
+  dispatch)
+
+;; A data object (arg) receive the operation to do through a "message"
+(define (apply-generic op arg) (arg op))
 
